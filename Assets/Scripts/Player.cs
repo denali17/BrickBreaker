@@ -1,10 +1,7 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-	public Text m_scoreLabel;
-	private int m_score = 0;
 	private float m_speed = 5.0f;
 	private Rigidbody2D rigidBody;
 	private float m_moveInput;
@@ -14,12 +11,6 @@ public class Player : MonoBehaviour
 	void Start()
 	{
 		rigidBody = GetComponent<Rigidbody2D>();
-	}
-
-	void IncreaseScore(int points)
-	{
-		m_score += points;
-		m_scoreLabel.text = m_score.ToString();
 	}
 
 	// Update is called once per frame
