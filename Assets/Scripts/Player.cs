@@ -23,12 +23,7 @@ public class Player : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		//Apply movement to Player
+		// Apply movement to Player
 		rigidBody.velocity = new Vector2(m_moveInput * m_speed, rigidBody.velocity.y);
-	}
-
-	void OnCollisionEnter2D(Collision2D collision)
-	{
-		Debug.Log("Collided with: " + collision.gameObject.name);
 	}
 }
