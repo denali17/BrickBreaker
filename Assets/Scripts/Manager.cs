@@ -1,17 +1,19 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using TMPro;
 
 public class Manager : MonoBehaviour
 {
 	public static Manager instance = null;
 	public GameObject gameOverPanel = null;
 
-	public Text scoreText;
+	public TextMeshProUGUI scoreText;
 	private int score = 0;
+
+	public TextMeshProUGUI highScoreText;
+	private int highScore = 0;
 	
-	public Text livesText;
-	private int lives = 3;
+	public int m_numberOfLives = 3;
+	public LivesSpawner livesSpawner;
 
 	void Awake()
 	{
@@ -27,26 +29,35 @@ public class Manager : MonoBehaviour
 
 	private void Start()
 	{
-		livesText.text = lives.ToString();
+		livesSpawner.SpawnLives(m_numberOfLives);
 	}
 
 	public void IncreaseScore(int points)
 	{
 		score += points;
 		scoreText.text = score.ToString();
+
+		if (score >= highScore)
+		{
+			highScore = score;
+			highScoreText.text = highScore.ToString();
+		}
 	}
 
 	public void LoseLives()
 	{
-		if (lives > 0)
+		if (m_numberOfLives > 0)
 		{
-			lives--;
-			livesText.text = lives.ToString();
+			m_numberOfLives--;
+			livesSpawner.UpdateHearts(m_numberOfLives);
+			
+			score = 0;
+			scoreText.text = score.ToString();
 		}
 
-		if (lives <= 0)
+		if (m_numberOfLives <= 0)
 		{
-			GameOver();
+			Manager.instance.GameOver();
 		}
 	}
 

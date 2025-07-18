@@ -5,6 +5,7 @@ public class Ball : MonoBehaviour
 	public float m_speed = 10.0f;
 	private Rigidbody2D rigidBody;
 	private Vector2 m_startPosition;
+	private AudioSource m_audioSource;
 
 
 	// Start is called before the first frame update
@@ -13,6 +14,8 @@ public class Ball : MonoBehaviour
 		m_startPosition = transform.localPosition;
 
 		rigidBody = GetComponent<Rigidbody2D>();
+
+		m_audioSource = GetComponent<AudioSource>();
 
 		LaunchBall();
 	}
@@ -33,6 +36,9 @@ public class Ball : MonoBehaviour
 	{
 		if (other.gameObject.CompareTag("Brick"))
 		{
+			m_audioSource.pitch = Random.Range(0.5f, 1.5f);
+			m_audioSource.Play();
+
 			Brick thisBrick = other.gameObject.GetComponent<Brick>();
 			thisBrick.GotHit();
 		}

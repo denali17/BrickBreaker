@@ -9,7 +9,7 @@ public class BrickSpawner : MonoBehaviour
 	public Vector2 m_spacing = new(2.0f, 2.0f);
 	private Vector2 m_brickSize;
 
-	// Red, orange, yellow, green, blue, purple
+	//Indices in this order: Red, orange, yellow, green, blue, purple
 	List<int> MainColourIndices = new() { 35, 27, 19, 11, 3, 43 };
 
 	// Start is called before the first frame update
@@ -50,8 +50,9 @@ public class BrickSpawner : MonoBehaviour
 				copy.transform.localPosition = spawnPosition;
 
 				//Assign each row a colour
-				int randomColourIndex = MainColourIndices[y];
-				copy.AssignColour(randomColourIndex);
+				int reverseColourIndex = (gridSize.y - 1) - y; //Reverse colour order, so that top row starts with red
+				int colourIndex = MainColourIndices[reverseColourIndex];
+				copy.AssignColour(colourIndex);
 			}
 		}
 	}
