@@ -36,7 +36,7 @@ public class Ball : MonoBehaviour
 	{
 		if (other.gameObject.CompareTag("Brick"))
 		{
-			m_audioSource.pitch = Random.Range(0.5f, 1.5f);
+			m_audioSource.pitch = Random.Range(0.8f, 1.2f);
 			m_audioSource.Play();
 
 			Brick thisBrick = other.gameObject.GetComponent<Brick>();

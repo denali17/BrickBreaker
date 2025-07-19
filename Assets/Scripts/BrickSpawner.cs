@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +7,7 @@ public class BrickSpawner : MonoBehaviour
 	public Vector2Int m_gridSize = new(4, 4);
 	public Vector2 m_spacing = new(2.0f, 2.0f);
 	private Vector2 m_brickSize;
+	public List<Brick> m_ListOfBricks = new();
 
 	//Indices in this order: Red, orange, yellow, green, blue, purple
 	List<int> MainColourIndices = new() { 35, 27, 19, 11, 3, 43 };
@@ -43,17 +43,30 @@ public class BrickSpawner : MonoBehaviour
 				// Apply start position offset when spawning
 				Vector2 spawnPosition = startPosition + new Vector2(xPosition,yPosition);
 
-				// Spawn brick
-				Brick copy = Instantiate(m_Brick, transform);
+				
+				Brick copy = Instantiate(m_Brick, transform); // Spawn brick
+				copy.brickSpawner = this; // Assign this brickspawner to the new brick
+				m_ListOfBricks.Add(copy); // Add new brick to the list of bricks
 
 				// Use local position to keep it relative to brick spawner
 				copy.transform.localPosition = spawnPosition;
 
-				//Assign each row a colour
+				// Assign each row a colour
 				int reverseColourIndex = (gridSize.y - 1) - y; //Reverse colour order, so that top row starts with red
 				int colourIndex = MainColourIndices[reverseColourIndex];
 				copy.AssignColour(colourIndex);
 			}
 		}
+	}
+
+	public void RemoveBrick(Brick thisBrick)
+	{
+		m_ListOfBricks.Remove(thisBrick);
+
+		if (m_ListOfBricks.Count == 0)
+		{
+			Manager.instance.DestroyedAllBricks();
+		}
+
 	}
 }

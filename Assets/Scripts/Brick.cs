@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Brick : MonoBehaviour
@@ -9,6 +7,8 @@ public class Brick : MonoBehaviour
     private int numberOfHits = 0;
     [SerializeField] Sprite[] brickSprites;
 	private int randomColourIndex = 0;
+	public BrickSpawner brickSpawner; // Assigned when the brick gets spawned
+
     
 	// Assign colour to brick from the array of sprites
 	public void AssignColour(int mainColourIndex)
@@ -27,11 +27,12 @@ public class Brick : MonoBehaviour
     {
         numberOfHits ++;
 		
-		// Destroy brick when out of lives
+		// Destroy brick when max hits has been reached
         if (numberOfHits == m_maxHits)
         {
-			Destroy(gameObject);
-			Manager.instance.IncreaseScore(10);
+			brickSpawner.RemoveBrick(this); // Remove brick from list 
+			Destroy(gameObject); // Destroy brick
+			Manager.instance.IncreaseScore(10); // Increase Score
 		}
 		
 		// Change sprite when brick gets hit

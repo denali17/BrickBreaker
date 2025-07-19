@@ -1,12 +1,28 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class Buttons : MonoBehaviour
 {
-	private void Start()
+	public Sprite[] m_brickSprites;
+	public Image m_image;
+	private int m_pressCount = 0;
+
+	public void OnButtonPressed()
 	{
-		
+		m_pressCount++;
+	
+		if (m_pressCount >= 3)
+		{
+			m_image.gameObject.SetActive(false);
+			SceneManager.LoadScene("Game");
+		}
+		else
+		{
+			m_image.sprite = m_brickSprites[m_pressCount];
+		}
 	}
+	
 	public void LoadGame()
 	{
 		Time.timeScale = 1.0f;
@@ -17,5 +33,27 @@ public class Buttons : MonoBehaviour
 	{
 		Application.Quit();
 		Debug.LogWarning("Quit Game");
+	}
+
+	public void FullScreen()
+	{
+		if (Screen.fullScreen == true)
+		{
+			// When switching to windowed mode set resolution to half of the screen resolution  
+			Screen.SetResolution(
+				Screen.currentResolution.width / 2,
+				Screen.currentResolution.height / 2,
+				false);
+		}
+		else
+		{
+			// When switching to fullscreen mode set resolution to screen resolution
+			Screen.SetResolution(
+				Screen.currentResolution.width,
+				Screen.currentResolution.height,
+				true);
+		}
+
+		Debug.LogWarning("Toggle Fullscreen");
 	}
 }

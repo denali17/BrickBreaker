@@ -5,6 +5,7 @@ public class Manager : MonoBehaviour
 {
 	public static Manager instance = null;
 	public GameObject gameOverPanel = null;
+	public GameObject congratsPanel = null;
 
 	public TextMeshProUGUI scoreText;
 	private int score = 0;
@@ -66,5 +67,12 @@ public class Manager : MonoBehaviour
 		// Pause the game and activate game over screen
 		Time.timeScale = 0.0f;
 		gameOverPanel.SetActive(true);
+	}
+
+	public void DestroyedAllBricks()
+	{
+		// Pause the game and activate win screen
+		Time.timeScale = 0.0f;
+		congratsPanel.SetActive(true);
 	}
 }
