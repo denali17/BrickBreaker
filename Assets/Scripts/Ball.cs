@@ -4,26 +4,40 @@ public class Ball : MonoBehaviour
 {
 	public float m_speed = 10.0f;
 	private Rigidbody2D rigidBody;
-	private Vector2 m_startPosition;
 	private AudioSource m_audioSource;
+	private bool m_hasLaunched = false;
+	public Transform player;
+	private Vector2 m_playerTransform;
+	public Vector2 m_offset = new Vector2(0.0f, 0.5f);
 
-
-	// Start is called before the first frame update
 	void Start()
 	{
-		m_startPosition = transform.localPosition;
-
 		rigidBody = GetComponent<Rigidbody2D>();
 
 		m_audioSource = GetComponent<AudioSource>();
-
-		LaunchBall();
 	}
+
+	private void Update()
+	{
+		if (!m_hasLaunched)
+		{
+			// Attach ball to the player for launching
+			m_playerTransform = new Vector2(player.position.x, player.position.y);
+			transform.position = m_playerTransform + m_offset;
+
+			if (Input.GetKeyDown(KeyCode.Space))
+			{
+				LaunchBall();
+			}
+		}
+	}
+
 
 	private void LaunchBall()
 	{
-		Vector2 initialDirection = Vector2.down;
+		Vector2 initialDirection = Vector2.up;
 		rigidBody.velocity = initialDirection * m_speed;
+		m_hasLaunched = true;
 	}
 
 	private void FixedUpdate()
@@ -50,13 +64,11 @@ public class Ball : MonoBehaviour
 		{	
 			Manager.instance.LoseLives();
 
-			// Stop ball movement and reset position
+			// Stop ball movement
 			rigidBody.velocity = Vector2.zero;
-			transform.localPosition = m_startPosition;
 
-			// Add short delay for re-launch after losing life
-			Invoke(nameof(LaunchBall), 1f);
-
+			// Reset launch
+			m_hasLaunched = false;
 		}
 	}
 }
