@@ -10,6 +10,7 @@ public class Ball : MonoBehaviour
 	private Vector2 m_playerTransform;
 	public Vector2 m_offset = new Vector2(0.0f, 0.5f);
 
+	
 	void Start()
 	{
 		rigidBody = GetComponent<Rigidbody2D>();
@@ -32,7 +33,6 @@ public class Ball : MonoBehaviour
 		}
 	}
 
-
 	private void LaunchBall()
 	{
 		Vector2 initialDirection = Vector2.up;
@@ -46,21 +46,48 @@ public class Ball : MonoBehaviour
 		rigidBody.velocity = rigidBody.velocity.normalized * m_speed;
 	}
 
-	private void OnCollisionEnter2D(Collision2D other)
+	private void OnCollisionEnter2D(Collision2D collision)
 	{
-		if (other.gameObject.CompareTag("Brick"))
+		if (collision.gameObject.CompareTag("Brick"))
 		{
 			m_audioSource.pitch = Random.Range(0.8f, 1.2f);
 			m_audioSource.Play();
 
-			Brick thisBrick = other.gameObject.GetComponent<Brick>();
+			Brick thisBrick = collision.gameObject.GetComponent<Brick>();
 			thisBrick.GotHit();
+		}
+
+		else if (collision.gameObject.CompareTag("Paddle"))
+		{
+			ContactPoint2D contact = collision.GetContact(0);
+			Vector2 constactPoint = contact.point;
+			Vector2 paddleCenter = collision.transform.position;
+			float paddleWidth = collision.collider.bounds.size.x;
+
+			// Collision position from the center of the paddle, in range -1 to 1
+			float hitPoint = (constactPoint.x - paddleCenter.x);
+			// Normalize value into the range of -1 to 1
+			float normalizedHitPoint = hitPoint / (paddleWidth * 0.5f);
+
+			// Defining a larger zone near the center of the paddle which makes the ball shoot straight up
+			float midZone = 0.2f;
+			if (hitPoint > -midZone && hitPoint < midZone)
+			{
+				normalizedHitPoint = 0.0f;
+			}
+
+			// Greater influence towards the end of the paddle and less influence near the center
+			float influence = Mathf.SmoothStep(0f, Mathf.Sign(normalizedHitPoint), Mathf.Abs(normalizedHitPoint));
+
+			// Apply new direction based on where the ball hit the paddle
+			Vector2 newDirection = new Vector2(influence, 1.0f).normalized;
+			rigidBody.velocity = newDirection * m_speed;
 		}
 	}
 
-	private void OnTriggerEnter2D(Collider2D other)
+	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (other.gameObject.name == "BottomWall")
+		if (collision.gameObject.name == "BottomWall")
 		{	
 			Manager.instance.LoseLives();
 

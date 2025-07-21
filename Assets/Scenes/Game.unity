@@ -3296,7 +3296,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_speed: 10
   player: {fileID: 1991552256}
-  offset: {x: 0, y: 0.5, z: 0}
+  m_offset: {x: 0, y: 0.6}
 --- !u!82 &1687931039
 AudioSource:
   m_ObjectHideFlags: 0
