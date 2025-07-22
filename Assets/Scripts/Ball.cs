@@ -70,7 +70,7 @@ public class Ball : MonoBehaviour
 			float normalizedHitPoint = hitPoint / (paddleWidth * 0.5f);
 
 			// Defining a larger zone near the center of the paddle which makes the ball shoot straight up
-			float midZone = 0.2f;
+			float midZone = 0.1f;
 			if (hitPoint > -midZone && hitPoint < midZone)
 			{
 				normalizedHitPoint = 0.0f;
