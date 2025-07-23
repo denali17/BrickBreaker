@@ -96,6 +96,8 @@ MonoBehaviour:
   - {fileID: 7381013, guid: 1e4f94ddb19b24646ab116b1194633df, type: 3}
   - {fileID: -573639930, guid: 1e4f94ddb19b24646ab116b1194633df, type: 3}
   - {fileID: 1367229416, guid: 1e4f94ddb19b24646ab116b1194633df, type: 3}
+  brickSpawner: {fileID: 0}
+  m_flashTime: 0.08
 --- !u!212 &7701025854309799694
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -116,7 +118,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 02fa4685ade544e40a6acb4141ac8fec, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
