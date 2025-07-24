@@ -88,7 +88,7 @@ public class Manager : MonoBehaviour
 
 		if (m_numberOfLives <= 0)
 		{
-			Manager.instance.GameOver();
+			GameOver();
 		}
 	}
 

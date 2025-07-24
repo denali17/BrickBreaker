@@ -1950,10 +1950,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f6091febe832ef4c92827c1edd33813, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ball: {fileID: 1687931038}
   m_Brick: {fileID: 7212281836161293754, guid: 14f71588e745bcf45a04b1e844cc1662, type: 3}
-  m_gridSize: {x: 1, y: 1}
+  m_gridTypes: 00000000010000000000000002000000
+  m_gridSizes:
+  - {x: 8, y: 6}
+  - {x: 6, y: 4}
+  - {x: 6, y: 4}
+  - {x: 10, y: 4}
   m_spacing: {x: 0.2, y: 0.1}
   m_ListOfBricks: []
+  normalBallSprite: {fileID: -84301849, guid: d2b2a4dab563bd140915cec31f7d208c, type: 3}
+  superBallSprite: {fileID: 1130168945, guid: d2b2a4dab563bd140915cec31f7d208c, type: 3}
 --- !u!4 &680904135
 Transform:
   m_ObjectHideFlags: 0
@@ -4086,7 +4094,7 @@ GameObject:
   - component: {fileID: 1687931039}
   m_Layer: 0
   m_Name: Ball
-  m_TagString: Untagged
+  m_TagString: Ball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -3,20 +3,21 @@ using UnityEngine;
 
 public class Brick : MonoBehaviour
 {
-
     public int m_maxHits = 3;
     private int numberOfHits = 0;
     [SerializeField] Sprite[] brickSprites;
 	private SpriteRenderer m_spriteRenderer;
 	private int randomColourIndex = 0;
 	public BrickSpawner brickSpawner; // Assigned when the brick gets spawned
+	private Collider2D m_collider;
 
 	[SerializeField] private float m_flashTime = 0.2f;
 
 	private void Awake()
 	{
-		// Get sprite renderer of this specific game object 
+		// Get sprite renderer and collider of this specific game object 
 		m_spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+		m_collider = GetComponent<Collider2D>();
 	}
 
 	// Assign colour to brick from the array of sprites
@@ -60,16 +61,13 @@ public class Brick : MonoBehaviour
 		// Ball moves through the brick on the last hit (makes it feel like the ball has more punch)
 		if (numberOfHits == m_maxHits-1)
 		{
-			Collider2D collider = gameObject.GetComponent<Collider2D>();
-			collider.isTrigger = true;
+			m_collider.isTrigger = true;
 		}
 
 		// Destroy brick when max hits has been reached
 		if (numberOfHits == m_maxHits)
         {
-			brickSpawner.RemoveBrick(this); // Remove brick from list 
-			Destroy(gameObject); // Destroy brick
-			Manager.instance.IncreaseScore(10); // Increase Score
+			DestroyBrick();
 		}
 		
 		// Change sprite when brick gets hit
@@ -78,5 +76,19 @@ public class Brick : MonoBehaviour
 			int nextSpriteIndex = randomColourIndex + numberOfHits;
 			m_spriteRenderer.sprite = brickSprites[nextSpriteIndex];
 		}
+
+		brickSpawner.BrickGotHit(this);
+	}
+
+	public void DestroyBrick()
+	{
+		brickSpawner.RemoveBrick(this); // Remove brick from list 
+		Destroy(gameObject); // Destroy brick
+		Manager.instance.IncreaseScore(10); // Increase Score
+	}
+
+	public void SetTriggerMode(bool isEnabled)
+	{
+		m_collider.isTrigger = isEnabled;
 	}
 }

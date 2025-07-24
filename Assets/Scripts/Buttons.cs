@@ -10,12 +10,17 @@ public class Buttons : MonoBehaviour
 
 	public void OnButtonPressed()
 	{
+		AudioSource audioSource = GetComponent<AudioSource>();
+		audioSource.pitch = Random.Range(0.8f, 1.2f); // Random pitch
+		audioSource.Play();
+
 		m_pressCount++;
 	
 		if (m_pressCount >= 3)
 		{
 			m_image.gameObject.SetActive(false);
-			SceneManager.LoadScene("Game");
+			// Give a little extra time for the sound to play before loading the new scene
+			Invoke("LoadGame", 0.1f);
 		}
 		else
 		{

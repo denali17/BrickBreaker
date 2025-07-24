@@ -1,4 +1,3 @@
-using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -13,7 +12,7 @@ public class Ball : MonoBehaviour
 	private Vector2 m_playerTransform;
 	public Vector2 m_offset = new Vector2(0.0f, 0.5f);
 	
-	
+
 	void Start()
 	{
 		m_rigidBody = GetComponent<Rigidbody2D>();
@@ -99,17 +98,22 @@ public class Ball : MonoBehaviour
 		{
 			Manager.instance.LoseLives();
 
-			// Stop ball movement
-			m_rigidBody.velocity = Vector2.zero;
+			ResetLaunch();
+		}
+	}
 
-			// Reset launch
-			m_hasLaunched = false;
+	public void ResetLaunch()
+	{
+		// Stop ball movement
+		m_rigidBody.velocity = Vector2.zero;
 
-			// Show launch prompt, except when game over panel is active
-			if (!Manager.instance.gameOverPanel.activeInHierarchy)
-			{
-				m_launchPrompt.gameObject.SetActive(true);
-			}
+		// Reset launch
+		m_hasLaunched = false;
+
+		// Show launch prompt, except when game over panel is active
+		if (!Manager.instance.gameOverPanel.activeInHierarchy)
+		{
+			m_launchPrompt.gameObject.SetActive(true);
 		}
 	}
 
