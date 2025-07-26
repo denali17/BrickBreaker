@@ -5,21 +5,24 @@ public class Manager : MonoBehaviour
 {
 	public static Manager instance = null;
 	public GameObject gameOverPanel = null;
-	public GameObject congratsPanel = null;
-	public GameObject pauseMenu = null;
+	[SerializeField] private GameObject congratsPanel = null;
+	[SerializeField] private GameObject pauseMenu = null;
 
-	private bool m_isPaused = false;
+	private bool _isPaused = false;
 
-	public TextMeshProUGUI scoreText;
-	private int score = 0;
+	[SerializeField] private TextMeshProUGUI scoreText;
+	private int _score = 0;
 
-	public TextMeshProUGUI highScoreText;
-	private int highScore = 0;
-	
-	public int m_numberOfLives = 3;
-	public LivesSpawner livesSpawner;
+	[SerializeField] private TextMeshProUGUI highScoreText;
+	private int _highScore = 0;
 
-	void Awake()
+	[SerializeField] private int numberOfLives = 3;
+	[SerializeField] private LivesSpawner livesSpawner;
+
+	[SerializeField] private AudioSource deathSound;
+	[SerializeField] private AudioSource powerUpSound;
+
+	private void Awake()
 	{
 		if (instance != null)
 		{
@@ -33,17 +36,17 @@ public class Manager : MonoBehaviour
 
 	private void Start()
 	{
-		livesSpawner.SpawnLives(m_numberOfLives);
+		livesSpawner.SpawnLives(numberOfLives);
 
-		highScore = PlayerPrefs.GetInt("High Score", 0);
-		highScoreText.text = highScore.ToString();
+		_highScore = PlayerPrefs.GetInt("High Score", 0);
+		highScoreText.text = _highScore.ToString();
 	}
 
 	private void Update()
 	{
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
-			if (m_isPaused)
+			if (_isPaused)
 			{
 				ResumeGame();
 			}
@@ -56,37 +59,39 @@ public class Manager : MonoBehaviour
 
 	public void IncreaseScore(int points)
 	{
-		score += points;
-		scoreText.text = score.ToString();
+		_score += points;
+		scoreText.text = _score.ToString();
 
-		if (score > highScore)
+		if (_score > _highScore)
 		{
-			highScore = score;
-			highScoreText.text = highScore.ToString();
-			PlayerPrefs.SetInt("High Score", highScore);
+			_highScore = _score;
+			highScoreText.text = _highScore.ToString();
+			PlayerPrefs.SetInt("High Score", _highScore);
 		}
 	}
 
 	public void ClearSave()
 	{
 		// Reset high score to current score
-		if (highScore > score)
+		if (_highScore > _score)
 		{
-			highScore = score;
-			highScoreText.text = highScore.ToString();
-			PlayerPrefs.SetInt("High Score", highScore);
+			_highScore = _score;
+			highScoreText.text = _highScore.ToString();
+			PlayerPrefs.SetInt("High Score", _highScore);
 		}
 	}
 
 	public void LoseLives()
 	{
-		if (m_numberOfLives > 0)
+		if (numberOfLives > 0)
 		{
-			m_numberOfLives--;
-			livesSpawner.UpdateHearts(m_numberOfLives);
+			numberOfLives--;
+			livesSpawner.UpdateHearts(numberOfLives);
+
+			deathSound.Play();
 		}
 
-		if (m_numberOfLives <= 0)
+		if (numberOfLives <= 0)
 		{
 			GameOver();
 		}
@@ -96,14 +101,14 @@ public class Manager : MonoBehaviour
 	{
 		Time.timeScale = 0.0f;
 		pauseMenu.SetActive(true);
-		m_isPaused = true;
+		_isPaused = true;
 	}
 
 	public void ResumeGame()
 	{
 		Time.timeScale = 1.0f;
 		pauseMenu.SetActive(false);
-		m_isPaused = false;
+		_isPaused = false;
 	}
 
 	public void GameOver()
@@ -118,5 +123,11 @@ public class Manager : MonoBehaviour
 		// Pause the game and activate win screen
 		Time.timeScale = 0.0f;
 		congratsPanel.SetActive(true);
+	}
+
+	public void PlayPowerUpAudio()
+	{
+		powerUpSound.pitch = Random.Range(0.8f, 1.2f);
+		powerUpSound.Play();
 	}
 }

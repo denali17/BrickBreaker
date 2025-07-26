@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5e7fd228cec9a748aeba07d70bc26cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxHits: 3
+  brickSpawner: {fileID: 0}
   brickSprites:
   - {fileID: 2107237576, guid: 1e4f94ddb19b24646ab116b1194633df, type: 3}
   - {fileID: 913256255, guid: 1e4f94ddb19b24646ab116b1194633df, type: 3}
@@ -96,8 +96,9 @@ MonoBehaviour:
   - {fileID: 7381013, guid: 1e4f94ddb19b24646ab116b1194633df, type: 3}
   - {fileID: -573639930, guid: 1e4f94ddb19b24646ab116b1194633df, type: 3}
   - {fileID: 1367229416, guid: 1e4f94ddb19b24646ab116b1194633df, type: 3}
-  brickSpawner: {fileID: 0}
-  m_flashTime: 0.08
+  maxHits: 3
+  numberOfHits: 0
+  flashTime: 0.08
 --- !u!212 &7701025854309799694
 SpriteRenderer:
   m_ObjectHideFlags: 0

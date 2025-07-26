@@ -3,19 +3,20 @@ using UnityEngine.UI;
 
 public class VolumeSlider : MonoBehaviour
 {
+	[SerializeField] private Slider volumeSlider;
 
-    public Slider m_volumeSlider;
+	private void Start()
+	{
+		volumeSlider.onValueChanged.AddListener(SetVolume);
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        m_volumeSlider.onValueChanged.AddListener(SetVolume);
-
-        m_volumeSlider.value = 0.5f;
-    }
+		float volume = PlayerPrefs.GetFloat("Volume", 0.5f);
+        volumeSlider.value = volume;
+		SetVolume(volume);
+	}
 
     public void SetVolume(float sliderValue)
     {
         AudioListener.volume = sliderValue;
-    }
+		PlayerPrefs.SetFloat("Volume", sliderValue);
+	}
 }

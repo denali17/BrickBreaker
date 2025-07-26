@@ -3,44 +3,44 @@ using UnityEngine;
 
 public class Brick : MonoBehaviour
 {
-    public int m_maxHits = 3;
-    private int numberOfHits = 0;
-    [SerializeField] Sprite[] brickSprites;
-	private SpriteRenderer m_spriteRenderer;
-	private int randomColourIndex = 0;
-	public BrickSpawner brickSpawner; // Assigned when the brick gets spawned
-	private Collider2D m_collider;
+	[HideInInspector] public BrickSpawner brickSpawner; // Assigned when the brick gets spawned
+	[SerializeField] private Sprite[] brickSprites;
 
-	[SerializeField] private float m_flashTime = 0.2f;
+	[HideInInspector] public int maxHits = 3;
+	[HideInInspector] public int numberOfHits = 0;
+	[SerializeField] private float flashTime;
+
+	private Collider2D _collider;
+	private SpriteRenderer _spriteRenderer;
+	private int _randomColourIndex = 0;
 
 	private void Awake()
 	{
 		// Get sprite renderer and collider of this specific game object 
-		m_spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-		m_collider = GetComponent<Collider2D>();
+		_spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+		_collider = GetComponent<Collider2D>();
 	}
 
-	// Assign colour to brick from the array of sprites
 	public void AssignColour(int mainColourIndex)
 	{
-		if (m_spriteRenderer != null)
+		if (_spriteRenderer != null)
 		{
-			// Assign colour
-			randomColourIndex = mainColourIndex;
-			m_spriteRenderer.sprite = brickSprites[randomColourIndex];
+			// Assign colour to brick
+			_randomColourIndex = mainColourIndex;
+			_spriteRenderer.sprite = brickSprites[_randomColourIndex];
 		}
 	}
 
 	private IEnumerator DamageFlash()
 	{
-		Material material = m_spriteRenderer.material;
+		Material material = _spriteRenderer.material;
 
 		float time = 0.0f;
 
 		// Decrease flash amount over time 
-		while (time < m_flashTime)
+		while (time < flashTime)
 		{
-			float currentFlashAmount = Mathf.Lerp(1.0f, 0.0f, time / m_flashTime);
+			float currentFlashAmount = Mathf.Lerp(1.0f, 0.0f, time / flashTime);
 			material.SetFloat("_FlashAmount", currentFlashAmount);
 			time += Time.deltaTime;
 
@@ -52,35 +52,42 @@ public class Brick : MonoBehaviour
 
 	public void GotHit()
     {
-		numberOfHits ++;
+		// Bricks set to trigger should be destroyed immediately
+		if (_collider.isTrigger)
+		{
+			numberOfHits = maxHits;
+		}
+		else
+		{
+			numberOfHits++;
+		}
 
 		// Make the brick flash when it gets hit 
 		StartCoroutine(DamageFlash());
 
 		// Set collider to be trigger on the second to last hit, so that
 		// Ball moves through the brick on the last hit (makes it feel like the ball has more punch)
-		if (numberOfHits == m_maxHits-1)
+		if (numberOfHits == maxHits-1)
 		{
-			m_collider.isTrigger = true;
+			_collider.isTrigger = true;
 		}
 
 		// Destroy brick when max hits has been reached
-		if (numberOfHits == m_maxHits)
+		if (numberOfHits >= maxHits)
         {
 			DestroyBrick();
 		}
-		
 		// Change sprite when brick gets hit
 		else
 		{
-			int nextSpriteIndex = randomColourIndex + numberOfHits;
-			m_spriteRenderer.sprite = brickSprites[nextSpriteIndex];
+			int nextSpriteIndex = _randomColourIndex + numberOfHits;
+			_spriteRenderer.sprite = brickSprites[nextSpriteIndex];
 		}
 
 		brickSpawner.BrickGotHit(this);
 	}
 
-	public void DestroyBrick()
+	private void DestroyBrick()
 	{
 		brickSpawner.RemoveBrick(this); // Remove brick from list 
 		Destroy(gameObject); // Destroy brick
@@ -89,6 +96,6 @@ public class Brick : MonoBehaviour
 
 	public void SetTriggerMode(bool isEnabled)
 	{
-		m_collider.isTrigger = isEnabled;
+		_collider.isTrigger = isEnabled;
 	}
 }

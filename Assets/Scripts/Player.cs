@@ -2,28 +2,25 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-	public float m_speed = 5.0f;
+	[SerializeField] private float speed;
 
-	private Rigidbody2D rigidBody;
-	private float m_moveInput;
+	private Rigidbody2D _rigidBody;
+	private float _moveInput;
 
-
-	// Start is called before the first frame update
-	void Start()
+	private void Start()
 	{
-		rigidBody = GetComponent<Rigidbody2D>();
+		_rigidBody = GetComponent<Rigidbody2D>();
 	}
 
-	// Update is called once per frame
-	void Update()
+	private void Update()
 	{
 		// Get horizontal input (-1 = left, 1 = right)
-		m_moveInput = Input.GetAxisRaw("Horizontal");
+		_moveInput = Input.GetAxisRaw("Horizontal");
 	}
 
 	private void FixedUpdate()
 	{
 		// Apply movement to Player
-		rigidBody.velocity = new Vector2(m_moveInput * m_speed, rigidBody.velocity.y);
+		_rigidBody.velocity = new Vector2(_moveInput * speed, _rigidBody.velocity.y);
 	}
 }

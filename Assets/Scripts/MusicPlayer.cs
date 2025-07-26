@@ -2,19 +2,26 @@ using UnityEngine;
 
 public class MusicPlayer : MonoBehaviour
 {
+	private static bool _musicPlaying = false;
 
-    private AudioSource m_audioSource;
+    private AudioSource _audioSource;
 
-    private void Awake()
-    {
-        DontDestroyOnLoad(gameObject);
+	private void Awake()
+	{
+		if (_musicPlaying)
+		{
+			Destroy(gameObject);
+			return;
+		}
 
-        m_audioSource = GetComponent<AudioSource>();
+		_musicPlaying = true;
+		DontDestroyOnLoad(gameObject);
+
+        _audioSource = GetComponent<AudioSource>();
     }
-  
-    // Start is called before the first frame update
-    void Start()
+
+	private void Start()
     {
-        m_audioSource.Play();
+        _audioSource.Play();
     }
 }

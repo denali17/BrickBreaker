@@ -3,24 +3,29 @@ using UnityEngine;
 
 public class BrickSpawner : MonoBehaviour
 {
-	public Ball ball;
-	public Brick m_Brick;
-	public List<GridType> m_gridTypes = new();
-	public List<Vector2Int> m_gridSizes = new();
-	public Vector2 m_spacing = new(2.0f, 2.0f);
-	private Vector2 m_brickSize;
-	public List<Brick> m_ListOfBricks = new();
-	private int levelIndex = 0;
+	[SerializeField] private Ball ball;
+	[SerializeField] private Brick brick;
+	[SerializeField] private PowerUp powerUp;
 
-	private bool superBallActive = false;
-	private int superBallMaxHits = 3;
-	private int superBallHitsRemaining = 0;
+	[SerializeField] private List<GridType> gridTypes = new();
+	[SerializeField] private List<Vector2Int> gridSizes = new();
+	private List<Brick> _listOfBricks = new();
+
+	[SerializeField] private Vector2 spacing = new();
+	private Vector2 _brickSize;
+	private int _levelIndex = 0;
+	private int _bricksUntilNextPowerUp = 0;
+
+	[SerializeField] private int superBallMaxHits = 3;
+	private int _superBallHitsRemaining = 0;
 
 	[SerializeField] private Sprite normalBallSprite;
 	[SerializeField] private Sprite superBallSprite;
+	[SerializeField] private TrailRenderer superBallTrail;
+	[SerializeField] private ParticleSystem superBallParticles;
 
-	//Indices in this order: Red, orange, yellow, green, blue, purple
-	List<int> MainColourIndices = new() { 35, 27, 19, 11, 3, 43 };
+	//Indices in this order: red, orange, yellow, green, blue, purple
+	private List<int> _mainColourIndices = new() { 35, 27, 19, 11, 3, 43 };
 
 	public enum GridType
 	{
@@ -29,66 +34,26 @@ public class BrickSpawner : MonoBehaviour
 		Diagonals
 	}
 
-	// Start is called before the first frame update
-	void Start()
-    {
+	private void Start()
+	{
 		// Get brick size from prefab renderer
-		Renderer brickRenderer = m_Brick.GetComponent<Renderer>();
-		m_brickSize = brickRenderer.bounds.size;
+		Renderer brickRenderer = brick.GetComponent<Renderer>();
+		_brickSize = brickRenderer.bounds.size;
 
 		LoadNextLevel();
-
-		ActivateSuperBall();
-	}
-
-	public void ActivateSuperBall()
-	{
-		superBallActive = true;
-		superBallHitsRemaining = superBallMaxHits;
-
-		ball.GetComponent<SpriteRenderer>().sprite = superBallSprite;
-
-		foreach (Brick brick in m_ListOfBricks)
-		{
-			brick.SetTriggerMode(true);
-		}
-	}
-
-	public void DeactivateSuperBall()
-	{
-		superBallActive = false;
-		ball.GetComponent<SpriteRenderer>().sprite = normalBallSprite;
-
-		foreach (Brick brick in m_ListOfBricks)
-		{
-			brick.SetTriggerMode(false);
-		}
-	}
-
-	public void BrickGotHit(Brick hitBrick)
-	{
-		if (superBallActive)
-		{
-			superBallHitsRemaining--;
-			hitBrick.DestroyBrick();
-			
-			if (superBallHitsRemaining == 0)
-			{
-				DeactivateSuperBall();
-			}
-		}
+		ResetPowerUpCounter();
 	}
 
 	private void SpawnGrid(Vector2Int gridSize, Vector2 spacing)
 	{
 		// Calculate total grid size
-		float totalGridSizeX = (gridSize.x * m_brickSize.x) + m_spacing.x * (gridSize.x - 1);
-		float totalGridSizeY = (gridSize.y * m_brickSize.y) + m_spacing.y * (gridSize.y - 1);
+		float totalGridSizeX = (gridSize.x * _brickSize.x) + this.spacing.x * (gridSize.x - 1);
+		float totalGridSizeY = (gridSize.y * _brickSize.y) + this.spacing.y * (gridSize.y - 1);
 
 		// Offset position to the bottom-center of the spawner
 		Vector2 startPosition = new(
-			(-totalGridSizeX * 0.5f) + (m_brickSize.x * 0.5f),
-			(-totalGridSizeY) + (m_brickSize.y * 0.5f));
+			(-totalGridSizeX * 0.5f) + (_brickSize.x * 0.5f),
+			(-totalGridSizeY) + (_brickSize.y * 0.5f));
 
 		for (int x = 0; x < gridSize.x; x++)  
 		{
@@ -113,19 +78,19 @@ public class BrickSpawner : MonoBehaviour
 	private void SpawnCheckerboardGrid(Vector2Int gridSize, Vector2 spacing)
 	{
 		// Calculate total grid size
-		float totalGridSizeX = (gridSize.x * m_brickSize.x) + m_spacing.x * (gridSize.x - 1);
-		float totalGridSizeY = (gridSize.y * m_brickSize.y) + m_spacing.y * (gridSize.y - 1);
+		float totalGridSizeX = (gridSize.x * _brickSize.x) + this.spacing.x * (gridSize.x - 1);
+		float totalGridSizeY = (gridSize.y * _brickSize.y) + this.spacing.y * (gridSize.y - 1);
 
 		// Offset position to the bottom-center of the spawner
 		Vector2 startPosition = new(
-			(-totalGridSizeX * 0.5f) + (m_brickSize.x * 0.5f),
-			(-totalGridSizeY) + (m_brickSize.y * 0.5f));
+			(-totalGridSizeX * 0.5f) + (_brickSize.x * 0.5f),
+			(-totalGridSizeY) + (_brickSize.y * 0.5f));
 
 		for (int x = 0; x < gridSize.x; x++)
 		{
 			for (int y = 0; y < gridSize.y; y++)
 			{
-				if ((x + y) % 2 == 0) // Skip alternating bricks 
+				if ((x + y) % 2 == 0) // Skip alternating bricks to make checkerboard pattern
 				{
 					continue;
 				}
@@ -138,19 +103,19 @@ public class BrickSpawner : MonoBehaviour
 	private void SpawnDiagonalsGrid(Vector2Int gridSize, Vector2 spacing)
 	{
 		// Calculate total grid size
-		float totalGridSizeX = (gridSize.x * m_brickSize.x) + m_spacing.x * (gridSize.x - 1);
-		float totalGridSizeY = (gridSize.y * m_brickSize.y) + m_spacing.y * (gridSize.y - 1);
+		float totalGridSizeX = (gridSize.x * _brickSize.x) + this.spacing.x * (gridSize.x - 1);
+		float totalGridSizeY = (gridSize.y * _brickSize.y) + this.spacing.y * (gridSize.y - 1);
 
 		// Offset position to the bottom-center of the spawner
 		Vector2 startPosition = new(
-			(-totalGridSizeX * 0.5f) + (m_brickSize.x * 0.5f),
-			(-totalGridSizeY) + (m_brickSize.y * 0.5f));
+			(-totalGridSizeX * 0.5f) + (_brickSize.x * 0.5f),
+			(-totalGridSizeY) + (_brickSize.y * 0.5f));
 
 		for (int x = 0; x < gridSize.x; x++)
 		{
 			for (int y = 0; y < gridSize.y; y++)
 			{
-				if ((x - y) % 3 == 0) // Skip third brick
+				if ((x - y) % 3 == 0) // Skip third brick to make diagonal lines pattern
 				{
 					SpawnBricksAt(x, y, gridSize, spacing, startPosition);
 				}
@@ -161,58 +126,114 @@ public class BrickSpawner : MonoBehaviour
 
 	private void SpawnBricksAt(int x, int y, Vector2Int gridSize, Vector2 spacing, Vector2 startPosition)
 	{
-		float xPosition = x * (m_brickSize.x + spacing.x);
-		float yPosition = y * (m_brickSize.y + spacing.y);
+		float xPosition = x * (_brickSize.x + spacing.x);
+		float yPosition = y * (_brickSize.y + spacing.y);
 
 		// Apply start position offset when spawning
 		Vector2 spawnPosition = startPosition + new Vector2(xPosition, yPosition);
 
-
-		Brick copy = Instantiate(m_Brick, transform); // Spawn brick
+		Brick copy = Instantiate(brick, transform); // Spawn brick
 
 		copy.brickSpawner = this; // Assign this brickspawner to the new brick
-		m_ListOfBricks.Add(copy); // Add new brick to the list of bricks
+		_listOfBricks.Add(copy); // Add new brick to the list of bricks
 
-		// Use local position to keep it relative to brick spawner
+		// Use local position to keep position relative to brick spawner
 		copy.transform.localPosition = spawnPosition;
 
-		// Assign each row a colour from top to bottom
-		int reverseColourIndex = (gridSize.y - 1) - y; // Reverse colour order, so that top row starts with red
-		reverseColourIndex = reverseColourIndex % MainColourIndices.Count; // Cycling rainbow effect
+		if (ball.superBallActive)
+		{
+			copy.SetTriggerMode(true);
+		}
 
-		int colourIndex = MainColourIndices[reverseColourIndex];
+		// Assign each row a colour from top to bottom
+		int reverseColourIndex = (gridSize.y - 1) - y; // Top row starts with red
+		reverseColourIndex = reverseColourIndex % _mainColourIndices.Count; // Cycling rainbow effect
+
+		int colourIndex = _mainColourIndices[reverseColourIndex];
 		copy.AssignColour(colourIndex);
 	}
 
 	public void LoadNextLevel()
 	{
-		// Load new level based on grid type and gridsize
-		GridType gridType = m_gridTypes[levelIndex];
-		Vector2Int gridSize = m_gridSizes[levelIndex];
+		// Load new level based on grid type and grid size
+		GridType gridType = gridTypes[_levelIndex];
+		Vector2Int gridSize = gridSizes[_levelIndex];
 
 		switch (gridType)
 		{
 			case GridType.Grid:
-				SpawnGrid(gridSize, m_spacing);
+				SpawnGrid(gridSize, spacing);
 				break;
 			case GridType.Checkerboard:
-				SpawnCheckerboardGrid(gridSize, m_spacing);
+				SpawnCheckerboardGrid(gridSize, spacing);
 				break;
 			case GridType.Diagonals:
-				SpawnDiagonalsGrid(gridSize, m_spacing);
+				SpawnDiagonalsGrid(gridSize, spacing);
 				break;
 		}
 
-		levelIndex++;
+		_levelIndex++;
+	}
+
+	public void ActivateSuperBall()
+	{
+		ball.superBallActive = true;
+		_superBallHitsRemaining = superBallMaxHits;
+
+		// Change to super ball appearance
+		ball.GetComponent<SpriteRenderer>().sprite = superBallSprite;
+		superBallTrail.Clear();
+		ball.SetTrailEnabled(true);
+		superBallParticles.Play();
+
+		foreach (Brick brick in _listOfBricks)
+		{
+			brick.SetTriggerMode(true);
+		}
+
+		Manager.instance.PlayPowerUpAudio();
+	}
+
+	public void DeactivateSuperBall()
+	{
+		ball.superBallActive = false;
+		
+		// Reset to normal ball appearance
+		ball.GetComponent<SpriteRenderer>().sprite = normalBallSprite;
+		ball.SetTrailEnabled(false);
+		superBallParticles.Stop();
+		superBallParticles.Clear();
+
+		foreach (Brick brick in _listOfBricks)
+		{
+			if (brick.numberOfHits == brick.maxHits - 1)
+			{
+				continue; // Bricks that only have one hit left should stay in trigger mode
+			} 
+			
+			brick.SetTriggerMode(false);
+		}
+	}
+
+	private void ResetPowerUpCounter()
+	{
+		_bricksUntilNextPowerUp = Random.Range(5, 9);
 	}
 
 	public void RemoveBrick(Brick thisBrick)
 	{
-		m_ListOfBricks.Remove(thisBrick);
+		_listOfBricks.Remove(thisBrick);
+		_bricksUntilNextPowerUp--;
 
-		if (m_ListOfBricks.Count == 0)
+		if (_bricksUntilNextPowerUp <= 0)
 		{
-			if (levelIndex < m_gridSizes.Count)
+			SpawnPowerUp(thisBrick.transform.position);
+			ResetPowerUpCounter();
+		}
+
+		if (_listOfBricks.Count == 0)
+		{
+			if (_levelIndex < gridSizes.Count)
 			{
 				ball.ResetLaunch();
 				LoadNextLevel();
@@ -220,6 +241,26 @@ public class BrickSpawner : MonoBehaviour
 			else
 			{
 				Manager.instance.DestroyedAllBricks();
+			}
+		}
+	}
+	
+	private void SpawnPowerUp(Vector2 position)
+	{
+		PowerUp copy = Instantiate(powerUp, position, Quaternion.identity);
+
+		copy.brickSpawner = this; // Assign this brickspawner to the new instance of the powerup
+	}
+
+	public void BrickGotHit(Brick hitBrick)
+	{
+		if (ball.superBallActive)
+		{
+			_superBallHitsRemaining--;
+
+			if (_superBallHitsRemaining <= 0)
+			{
+				DeactivateSuperBall();
 			}
 		}
 	}

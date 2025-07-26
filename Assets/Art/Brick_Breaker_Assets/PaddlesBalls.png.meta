@@ -180,6 +180,48 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: VolumeHandle
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 80
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0af7ab0b3391c6b4497bd9fa18f8b403
+      internalID: -451313786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PowerUp
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 80
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ee55f6a2d0bb6748843b26b5cad3487
+      internalID: -537716356
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -193,7 +235,9 @@ TextureImporter:
     nameFileIdTable:
       NormalBall: -84301849
       Paddle: 410276918
+      PowerUp: -537716356
       SuperBall: 1130168945
+      VolumeHandle: -451313786
       Walls: 1049934044
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0

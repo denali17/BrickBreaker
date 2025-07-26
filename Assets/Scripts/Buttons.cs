@@ -4,27 +4,33 @@ using UnityEngine.SceneManagement;
 
 public class Buttons : MonoBehaviour
 {
-	public Sprite[] m_brickSprites;
-	public Image m_image;
-	private int m_pressCount = 0;
+	[SerializeField] private Sprite[] brickSprites;
+	[SerializeField] private Image image;
 
-	public void OnButtonPressed()
+	private int _pressCount = 0;
+	private AudioSource _audioSource;
+
+	private void Start()
 	{
-		AudioSource audioSource = GetComponent<AudioSource>();
-		audioSource.pitch = Random.Range(0.8f, 1.2f); // Random pitch
-		audioSource.Play();
+		_audioSource = GetComponent<AudioSource>();
+	}
 
-		m_pressCount++;
+	public void StartGame()
+	{
+		_audioSource.pitch = Random.Range(0.8f, 1.2f); // Random pitch
+		_audioSource.Play();
+
+		_pressCount++;
 	
-		if (m_pressCount >= 3)
+		if (_pressCount >= 3)
 		{
-			m_image.gameObject.SetActive(false);
+			image.gameObject.SetActive(false);
 			// Give a little extra time for the sound to play before loading the new scene
 			Invoke("LoadGame", 0.1f);
 		}
 		else
 		{
-			m_image.sprite = m_brickSprites[m_pressCount];
+			image.sprite = brickSprites[_pressCount];
 		}
 	}
 	
@@ -38,6 +44,12 @@ public class Buttons : MonoBehaviour
 	{
 		Application.Quit();
 		Debug.LogWarning("Quit Game");
+	}
+
+	public void QuitToTitle()
+	{
+		Time.timeScale = 1.0f;
+		SceneManager.LoadScene("TitleScreen");
 	}
 
 	public void FullScreen()
@@ -58,7 +70,5 @@ public class Buttons : MonoBehaviour
 				Screen.currentResolution.height,
 				true);
 		}
-
-		Debug.LogWarning("Toggle Fullscreen");
 	}
 }

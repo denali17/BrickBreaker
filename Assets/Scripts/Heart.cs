@@ -11,6 +11,7 @@ public class Heart : MonoBehaviour
 	{
 		heartSpriteRenderer = GetComponent<SpriteRenderer>();
 	}
+	
 	private void Start()
 	{
 		SetFull();
