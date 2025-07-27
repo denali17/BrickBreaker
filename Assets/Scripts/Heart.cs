@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Heart : MonoBehaviour
 {
-	[SerializeField] private Sprite fullHeart; 
+	[SerializeField] private Sprite fullHeart;
 	[SerializeField] private Sprite emptyHeart;
 
 	private SpriteRenderer heartSpriteRenderer;

@@ -46,6 +46,7 @@ public class Ball : MonoBehaviour
 		// Launch the ball in an upward direction, with a chance of going slightly off center
 		Vector2 initialDirection = new Vector2(Random.Range(-0.08f, 0.08f), 1.0f).normalized;
 		_rigidBody.velocity = initialDirection * speed;
+		
 		_hasLaunched = true;
 		_collider.enabled = true;
 		SetTrailEnabled(true); // Turn on trail if superball active

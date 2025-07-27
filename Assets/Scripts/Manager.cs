@@ -72,7 +72,7 @@ public class Manager : MonoBehaviour
 
 	public void ClearSave()
 	{
-		// Reset high score to current score
+		// Reset highscore to current score
 		if (_highScore > _score)
 		{
 			_highScore = _score;
@@ -99,6 +99,7 @@ public class Manager : MonoBehaviour
 
 	public void PauseGame()
 	{
+		// Pause the game and activate pause menu
 		Time.timeScale = 0.0f;
 		pauseMenu.SetActive(true);
 		_isPaused = true;
@@ -106,6 +107,7 @@ public class Manager : MonoBehaviour
 
 	public void ResumeGame()
 	{
+		// Resume game and deactivate pause menu
 		Time.timeScale = 1.0f;
 		pauseMenu.SetActive(false);
 		_isPaused = false;

@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		// Apply movement to Player
+		// Apply movement to player
 		_rigidBody.velocity = new Vector2(_moveInput * speed, _rigidBody.velocity.y);
 	}
 }

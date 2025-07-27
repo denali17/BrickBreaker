@@ -17,7 +17,7 @@ public class LivesSpawner : MonoBehaviour
 		for (int i = 0; i < numberOfLives; i++)
 		{
 			float xPosition = i * (heartsize.x + spacing);
-			Vector2 spawnPosition = new Vector2(xPosition, 0);
+			Vector2 spawnPosition = new(xPosition, 0);
 
 			// Spawn hearts
 			Heart copy = Instantiate(heart, transform);
@@ -44,5 +44,4 @@ public class LivesSpawner : MonoBehaviour
 			}
 		}
 	}
-
 }

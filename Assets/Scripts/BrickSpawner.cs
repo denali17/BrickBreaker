@@ -65,9 +65,9 @@ public class BrickSpawner : MonoBehaviour
 				(x == gridSize.x - 1 && y == 0) ||				// bottom-right
 				(x == gridSize.x - 1 && y == gridSize.y - 1);	// top-right
 
-				if (gridSize.x >= 3 &&  gridSize.y >= 3 && isCorner)
+				if (gridSize.x >= 3 && gridSize.y >= 3 && isCorner)
 				{
-					continue; // Skip spawing the corners if the grid size is at least 3x3 
+					continue; // Skip spawing the corners (if the grid size is at least 3x3)
 				}
 
 				SpawnBricksAt(x, y, gridSize, spacing, startPosition);
@@ -137,7 +137,7 @@ public class BrickSpawner : MonoBehaviour
 		copy.brickSpawner = this; // Assign this brickspawner to the new brick
 		_listOfBricks.Add(copy); // Add new brick to the list of bricks
 
-		// Use local position to keep position relative to brick spawner
+		// Use local position to keep position relative to brickspawner
 		copy.transform.localPosition = spawnPosition;
 
 		if (ball.superBallActive)
@@ -146,7 +146,7 @@ public class BrickSpawner : MonoBehaviour
 		}
 
 		// Assign each row a colour from top to bottom
-		int reverseColourIndex = (gridSize.y - 1) - y; // Top row starts with red
+		int reverseColourIndex = (gridSize.y - 1) - y; // Top row starting with red
 		reverseColourIndex = reverseColourIndex % _mainColourIndices.Count; // Cycling rainbow effect
 
 		int colourIndex = _mainColourIndices[reverseColourIndex];
@@ -186,6 +186,9 @@ public class BrickSpawner : MonoBehaviour
 		ball.SetTrailEnabled(true);
 		superBallParticles.Play();
 
+		// Bonus score for collecting the powerup
+		Manager.instance.IncreaseScore(300);
+
 		foreach (Brick brick in _listOfBricks)
 		{
 			brick.SetTriggerMode(true);
@@ -217,7 +220,7 @@ public class BrickSpawner : MonoBehaviour
 
 	private void ResetPowerUpCounter()
 	{
-		_bricksUntilNextPowerUp = Random.Range(5, 9);
+		_bricksUntilNextPowerUp = Random.Range(5, 8);
 	}
 
 	public void RemoveBrick(Brick thisBrick)

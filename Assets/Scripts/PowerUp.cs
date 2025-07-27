@@ -7,7 +7,7 @@ public class PowerUp : MonoBehaviour
 
 	private void Update()
     {
-        transform.Translate(Vector2.down * fallSpeed* Time.deltaTime);
+        transform.Translate(Vector2.down * fallSpeed * Time.deltaTime);
     }
 
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -16,7 +16,7 @@ public class PowerUp : MonoBehaviour
         {
 			brickSpawner.ActivateSuperBall();
 			// Destroy power up after short delay, so that it disappears once it's underneath the paddle
-			Destroy(gameObject, 0.1f); 
+			Destroy(gameObject, 0.08f); 
 		}
         else if (collision.gameObject.name == "BottomWall")
         {

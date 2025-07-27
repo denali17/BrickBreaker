@@ -65,9 +65,9 @@ public class Brick : MonoBehaviour
 		// Make the brick flash when it gets hit 
 		StartCoroutine(DamageFlash());
 
-		// Set collider to be trigger on the second to last hit, so that
-		// Ball moves through the brick on the last hit (makes it feel like the ball has more punch)
-		if (numberOfHits == maxHits-1)
+		// Set collider to be trigger on the second to last hit, so that the
+		// ball doesn't bounce off (makes it feel like the ball has more punch)
+		if (numberOfHits == maxHits - 1)
 		{
 			_collider.isTrigger = true;
 		}
@@ -91,7 +91,7 @@ public class Brick : MonoBehaviour
 	{
 		brickSpawner.RemoveBrick(this); // Remove brick from list 
 		Destroy(gameObject); // Destroy brick
-		Manager.instance.IncreaseScore(10); // Increase Score
+		Manager.instance.IncreaseScore(100); // Increase score
 	}
 
 	public void SetTriggerMode(bool isEnabled)

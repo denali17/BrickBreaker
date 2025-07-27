@@ -9,6 +9,7 @@ public class VolumeSlider : MonoBehaviour
 	{
 		volumeSlider.onValueChanged.AddListener(SetVolume);
 
+		// If there is no save data, set default volume to 50%
 		float volume = PlayerPrefs.GetFloat("Volume", 0.5f);
         volumeSlider.value = volume;
 		SetVolume(volume);
@@ -16,7 +17,9 @@ public class VolumeSlider : MonoBehaviour
 
     public void SetVolume(float sliderValue)
     {
+		// Adjust volume through main menu slider
         AudioListener.volume = sliderValue;
+		// Save to player prefs
 		PlayerPrefs.SetFloat("Volume", sliderValue);
 	}
 }
